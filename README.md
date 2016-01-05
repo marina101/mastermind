@@ -1,4 +1,4 @@
-Welcome to MasterMind!
+    #Welcome to MasterMind!
     In this game, the codesetter sets a code of four colours (there are 
     six color possibilities for each of the four). The code-breaker 
     has twelve turns to try to guess the correct colors and their sequence.
