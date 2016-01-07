@@ -26,16 +26,13 @@ class Board
     size = @candidates.length
     index = rand(size)
     @guess = @candidates[index] #randomly guesses one from the list of candidates
-    puts "Computer's guess is #{@guess.to_s}"
+    puts "\nComputer's guess is #{@guess.to_s}"
     checkGuess("computer", @guess, @contents)
     oldScore = @score
-    puts "score is #{oldScore}"
     return true if oldScore == 8
     @candidates = @candidates.select do |pattern|
                                         checkGuess('computer', pattern, @guess, true) == oldScore
                                     end
-    puts "candidates are now #{@candidates}"
-
   end
 
   def generate_all_possibilities
@@ -102,27 +99,27 @@ class Board
   def checkGuess(player, guess, answer, test=false)
     temp = Array.new(guess)
     cont = Array.new(answer)
-    blackPegs = 0
-    whitePegs = 0
+    @blackPegs = 0
+    @whitePegs = 0
 
     if temp[0] == cont[0]
       value = temp[0]
-      blackPegs += 1
+      @blackPegs += 1
       temp[0] = nil
       cont[0] = nil
     end
     if temp[1] == cont[1]
-      blackPegs += 1
+      @blackPegs += 1
       temp[1] = nil
       cont[1] = nil
     end
     if temp[2] == cont[2]
-      blackPegs += 1
+      @blackPegs += 1
       temp[2] = nil
       cont[2] = nil
     end
     if temp[3] == cont[3]
-      blackPegs += 1
+      @blackPegs += 1
       temp[3] = nil
       cont[3] = nil
     end
@@ -132,30 +129,34 @@ class Board
 
     temp.each do |g|
       if cont.include?(g)
-        whitePegs += 1 
+        @whitePegs += 1 
+        index = cont.index(g)
+        cont.delete_at(index)
+        cont.compact!
       end
     end
 
+    @score = [@blackPegs, @whitePegs]
+
     if(player == "human")
       #displays status to player
-      if victory?(blackPegs)
+      if victory?(@blackPegs)
         puts "Congratulations! You won!"
         return true
       else
-        puts "\nYour guess resulted in #{blackPegs} black pegs and #{whitePegs} white pegs.\n"
+        puts "\nYour guess resulted in #{@blackPegs} black pegs and #{@whitePegs} white pegs.\n"
         return false
       end  
     elsif (!test) #if player is computer
-      if victory?(blackPegs)
+      if victory?(@blackPegs)
         puts "Congratulations Computer, you have won!"
         return true
       else
-        puts "\nYour guess resulted in #{blackPegs} black pegs and #{whitePegs} white pegs.\n"
-        @score = (blackPegs*2) + whitePegs
+        puts "Your guess resulted in #{@blackPegs} black pegs and #{@whitePegs} white pegs.\n"
         return false
       end  
     else
-      return @score = (blackPegs*2) + whitePegs
+      return @score
     end
 
   end
