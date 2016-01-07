@@ -2,6 +2,7 @@
 class Game
   require_relative 'board'
   require_relative 'ai'
+  require_relative 'human'
 
   puts "Welcome to MasterMind!\n
     In this game, the codesetter sets a code of four colours (there are 
@@ -20,9 +21,10 @@ class Game
     Please enter 'breaker' or 'setter':"
     answer = gets.chomp
     comp_first = true
-    board = Board.new
+    
 
     if answer == "breaker"
+      board = Board.new
       board.showBoard
       12.times do
         board.askGuess
@@ -30,6 +32,7 @@ class Game
         board.showBoard
       end
     elsif answer == "setter"
+      board = Ai.new
       win = false
       board.setBoard
       board.showBoard
