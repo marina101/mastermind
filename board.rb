@@ -1,7 +1,50 @@
 class Board
+  attr_accessor :guess, :list, :contents, :score, :candidates
 
   def initialize
     @contents = [Board.generateColor, Board.generateColor, Board.generateColor, Board.generateColor]
+  end
+
+  #the computer generates a list of all colour possibilites and picks one randomly for its first guess
+  def comp_first_guess
+    generate_all_possibilities
+    index = rand(1296)
+    @guess = @list[index]  
+    puts "Computer's first guess is #{@guess.to_s}"
+    checkGuess("computer", @guess, @contents)
+    @candidates = Array.new
+    oldScore = @score
+    return true if oldScore == 8
+    @list.each do |option|
+      if checkGuess('computer', option, @guess, true) == oldScore
+        @candidates.push(option)
+      end
+    end
+  end
+
+  def comp_guess
+    size = @candidates.length
+    index = rand(size)
+    @guess = @candidates[index] #randomly guesses one from the list of candidates
+    puts "Computer's guess is #{@guess.to_s}"
+    checkGuess("computer", @guess, @contents)
+    oldScore = @score
+    puts "score is #{oldScore}"
+    return true if oldScore == 8
+    @candidates = @candidates.select do |pattern|
+                                        checkGuess('computer', pattern, @guess, true) == oldScore
+                                    end
+    puts "candidates are now #{@candidates}"
+
+  end
+
+  def generate_all_possibilities
+    a = ['red ', 'yellow ', 'green ', 'blue ', 'orange ','purple ']
+    @list = a.repeated_permutation(4).map(&:join)
+    @list = @list.map do |phrase|
+                       phrase.split(' ')
+                      end
+    puts "\n\n possibilities list is #{@list.length} long\n\n"
   end
 
   def Board.generateColor
@@ -37,7 +80,7 @@ class Board
       if (valid?(c1) && valid?(c2) && valid?(c3) && valid?(c4))
         valid = true
       else  
-        puts "There was a problem with your input. Please try again with correct input"
+        puts "\nThere was a problem with your input. Please try again with correct input\n"
       end
     end
 
@@ -54,9 +97,11 @@ class Board
     end
   end
 
-  def checkGuess
-    temp = Array.new(@guess)
-    cont = Array.new(@contents)
+  #checks the guess and calculated number of pegs for the guess
+  #if codebreaker is human returns output to screen, otherwise returns score to comp
+  def checkGuess(player, guess, answer, test=false)
+    temp = Array.new(guess)
+    cont = Array.new(answer)
     blackPegs = 0
     whitePegs = 0
 
@@ -84,7 +129,6 @@ class Board
 
     temp.compact!
     cont.compact!
-    puts "\nafter ifs before WP, temp is #{temp.to_s} and cont is #{cont.to_s}\n"
 
     temp.each do |g|
       if cont.include?(g)
@@ -92,14 +136,28 @@ class Board
       end
     end
 
-    #displays status to player
-    if victory?(blackPegs)
-      puts "Congratulations! You won!"
-      return true
+    if(player == "human")
+      #displays status to player
+      if victory?(blackPegs)
+        puts "Congratulations! You won!"
+        return true
+      else
+        puts "\nYour guess resulted in #{blackPegs} black pegs and #{whitePegs} white pegs.\n"
+        return false
+      end  
+    elsif (!test) #if player is computer
+      if victory?(blackPegs)
+        puts "Congratulations Computer, you have won!"
+        return true
+      else
+        puts "\nYour guess resulted in #{blackPegs} black pegs and #{whitePegs} white pegs.\n"
+        @score = (blackPegs*2) + whitePegs
+        return false
+      end  
     else
-      puts "\nYour guess resulted in #{blackPegs} black pegs and #{whitePegs} white pegs.\n"
-      return false
-    end  
+      return @score = (blackPegs*2) + whitePegs
+    end
+
   end
 
   def showBoard
@@ -121,7 +179,7 @@ class Board
       c2 = gets.chomp
       puts "Please choose the third color in the sequence:"
       c3 = gets.chomp
-      puts "Please choose the fourth colori n the sequence:"
+      puts "Please choose the fourth color in the sequence:"
       c4 = gets.chomp
 
       if (valid?(c1) && valid?(c2) && valid?(c3) && valid?(c4))
@@ -130,8 +188,7 @@ class Board
         puts "There was a problem with your input. Please try again with correct input"
       end
     end
-
     @contents = [c1, c2, c3, c4]
   end
-  
+
 end

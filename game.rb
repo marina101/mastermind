@@ -19,19 +19,29 @@ class Game
     puts "Would you like to play as the codebreaker or as code-setter? 
     Please enter 'breaker' or 'setter':"
     answer = gets.chomp
+    comp_first = true
+    board = Board.new
 
     if answer == "breaker"
-      board = Board.new
       board.showBoard
       12.times do
         board.askGuess
-        break if board.checkGuess
+        break if board.checkGuess("human", board.guess, board.contents)
         board.showBoard
       end
     elsif answer == "setter"
-      board = Board.new
+      win = false
       board.setBoard
       board.showBoard
+      12.times do 
+        if(comp_first)
+          board.comp_first_guess
+          comp_first=false
+        else
+          board.comp_guess
+        end
+      
+      end
     end
     puts "Do you want to play again? Type 'y' if yes, any other key to quit"
     play_again = gets.chomp
