@@ -1,4 +1,6 @@
 
+#driver class of the game - explains rules and runs control flow based on whether
+#the player is human or AI
 class Game
   require_relative 'board'
   require_relative 'ai'
@@ -17,41 +19,49 @@ class Game
   finished = false
 
   while (!finished) do 
-    puts "Would you like to play as the codebreaker or as code-setter? 
-    Please enter 'breaker' or 'setter':"
-    answer = gets.chomp
-    comp_first = true
-    win = false
+    begin
+      puts "Would you like to play as the codebreaker or as code-setter? 
+      Please enter 'breaker' or 'setter':"
+      answer = gets.chomp
+      comp_first = true
+      win = false
 
-    if answer == "breaker"
-      board = Human.new
-      board.showBoard
-      12.times do
-        board.askGuess
-        win = board.checkGuess("human", board.guess, board.contents)
-        break if win  
-      end
-    puts "Sorry computer, you have run out of turns" if !win
-    board.showBoard
-    elsif answer == "setter"
-      board = Ai.new
-      
-      board.setBoard
-      12.times do 
-        if(comp_first)
-          win = board.comp_first_guess
-          comp_first=false
-        else
-          win = board.comp_guess
+      #if a human will be guessing code
+      if answer == "breaker"
+        board = Human.new
+        12.times do
+          board.askGuess
+          win = board.checkGuess("human", board.guess, board.contents)
+          break if win  
         end
-      break if win
-      end
       puts "Sorry, you have run out of turns" if !win
       board.showBoard
+
+      #if AI will be guessing code
+      elsif answer == "setter"
+        board = Ai.new
+        
+        board.setBoard
+        12.times do 
+          if(comp_first)
+            win = board.comp_first_guess
+            comp_first=false
+          else
+            win = board.comp_guess
+          end
+        break if win
+        end
+        puts "Sorry computer, you have run out of turns" if !win
+        board.showBoard
+      else
+        raise ArgumentError, "Please enter valid input"
+      end
+      puts "Do you want to play again? Type 'y' if yes, any other key to quit"
+      play_again = gets.chomp
+      finished = true unless play_again.downcase == 'y'
+    rescue => e
+      puts e
     end
-    puts "Do you want to play again? Type 'y' if yes, any other key to quit"
-    play_again = gets.chomp
-    finished = true unless play_again.downcase == 'y'
   end
 
 

@@ -3,6 +3,7 @@ class Human < Board
   require 'rubygems'
   require 'terminal-display-colors'
 
+  #asks the human to make a guess
   def askGuess
     valid = false
     while (!valid)
@@ -25,6 +26,7 @@ class Human < Board
     puts "your guess was #{@guess.to_s}"
   end
 
+  #checks the validity of the guess
   def checkGuess(player, guess, answer, test=false)
     super(player, guess, answer, test)
 

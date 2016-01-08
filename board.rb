@@ -1,3 +1,4 @@
+#sets up the generic properties of the board common to both human and AI
 class Board
   
   attr_accessor :guess, :list, :contents, :score, :candidates
@@ -24,6 +25,7 @@ class Board
     end
   end
 
+  #checks that the input is valid
   def valid?(color)
     validOptions = ['red', 'yellow', 'green', 'blue', 'orange', 'purple']
     if validOptions.include?(color)
@@ -34,7 +36,6 @@ class Board
   end
 
   #checks the guess and calculated number of pegs for the guess
-  #if codebreaker is human returns output to screen, otherwise returns score to comp
   def checkGuess(player, guess, answer, test=false)
     temp = Array.new(guess)
     cont = Array.new(answer)
@@ -66,6 +67,7 @@ class Board
     temp.compact!
     cont.compact!
 
+    #checking white pegs
     temp.each do |g|
       if cont.include?(g)
         @whitePegs += 1 
@@ -78,10 +80,12 @@ class Board
     @score = [@blackPegs, @whitePegs]
   end
 
+  #prints board to the screen
   def showBoard
     puts "\n The right answer is #{@contents.to_s}\n"
   end
 
+  #checks for victory
   def victory?(num)
     return true if num == 4
     false
