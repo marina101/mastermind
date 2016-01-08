@@ -1,4 +1,5 @@
 class Board
+  
   attr_accessor :guess, :list, :contents, :score, :candidates
 
   def initialize
@@ -21,29 +22,6 @@ class Board
     when 5 
       return color = "purple"
     end
-  end
-
-  def askGuess
-    valid = false
-    while (!valid)
-      puts "The choices are: 'red' 'yellow' 'green' 'blue' 'orange' 'purple';\n
-      Please enter your guess for the first color:"
-      c1 = gets.chomp 
-      puts "Please enter your guess for the second color:"
-      c2 = gets.chomp
-      puts "Please enter your guess for the third color:"
-      c3 = gets.chomp
-      puts "Please enter your guess for the fourth color:"
-      c4 = gets.chomp
-      if (valid?(c1) && valid?(c2) && valid?(c3) && valid?(c4))
-        valid = true
-      else  
-        puts "\nThere was a problem with your input. Please try again with correct input\n"
-      end
-    end
-
-    @guess = [c1, c2, c3, c4]
-    puts "your guess was #{@guess.to_s}"
   end
 
   def valid?(color)
@@ -98,39 +76,14 @@ class Board
     end
 
     @score = [@blackPegs, @whitePegs]
-
-    if(player == "human")
-      #displays status to player
-      if victory?(@blackPegs)
-        puts "Congratulations! You won!"
-        return true
-      else
-        puts "\nYour guess resulted in #{@blackPegs} black pegs and #{@whitePegs} white pegs.\n"
-        return false
-      end  
-    elsif (!test) #if player is computer
-      if victory?(@blackPegs)
-        puts "Congratulations Computer, you have won!"
-        return true
-      else
-        puts "Your guess resulted in #{@blackPegs} black pegs and #{@whitePegs} white pegs.\n"
-        return false
-      end  
-    else
-      return @score
-    end
-
   end
 
   def showBoard
-    puts "\n #{@contents.to_s}\n"
+    puts "\n The right answer is #{@contents.to_s}\n"
   end
 
   def victory?(num)
     return true if num == 4
     false
   end
-
-  
-
 end

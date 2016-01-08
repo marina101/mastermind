@@ -1,10 +1,12 @@
 class Human < Board
   require_relative 'board'
+  require 'rubygems'
+  require 'terminal-display-colors'
 
   def askGuess
     valid = false
     while (!valid)
-      puts "The choices are: 'red' 'yellow' 'green' 'blue' 'orange' 'purple';\n
+      puts "The choices are: #{'red'.bright_red} #{'yellow'.bright_yellow} #{'green'.green} #{'blue'.cyan} #{'orange'.red} #{'purple'.magenta};\n
       Please enter your guess for the first color:"
       c1 = gets.chomp 
       puts "Please enter your guess for the second color:"
@@ -19,9 +21,21 @@ class Human < Board
         puts "\nThere was a problem with your input. Please try again with correct input\n"
       end
     end
-
     @guess = [c1, c2, c3, c4]
     puts "your guess was #{@guess.to_s}"
+  end
+
+  def checkGuess(player, guess, answer, test=false)
+    super(player, guess, answer, test)
+
+    #displays status to player
+      if victory?(@blackPegs)
+        puts "Congratulations! You won!"
+        return true
+      else
+        puts "\nYour guess resulted in #{@blackPegs} black pegs and #{@whitePegs} white pegs.\n"
+        return false
+      end  
   end
 
 

@@ -29,15 +29,16 @@ require_relative 'board'
     index = rand(1296)
     @guess = @list[index]  
     puts "Computer's first guess is #{@guess.to_s}"
-    checkGuess("computer", @guess, @contents)
+    win = checkGuess("computer", @guess, @contents)
     @candidates = Array.new
     oldScore = @score
-    return true if oldScore == 8
+    return true if win
     @list.each do |option|
       if checkGuess('computer', option, @guess, true) == oldScore
         @candidates.push(option)
       end
     end
+    return win
   end
 
   def comp_guess
@@ -45,12 +46,13 @@ require_relative 'board'
     index = rand(size)
     @guess = @candidates[index] #randomly guesses one from the list of candidates
     puts "\nComputer's guess is #{@guess.to_s}"
-    checkGuess("computer", @guess, @contents)
+    win = checkGuess("computer", @guess, @contents)
+    return true if win
     oldScore = @score
-    return true if oldScore == 8
     @candidates = @candidates.select do |pattern|
                                         checkGuess('computer', pattern, @guess, true) == oldScore
                                     end
+    return win
   end
 
   def generate_all_possibilities
@@ -60,6 +62,23 @@ require_relative 'board'
                        phrase.split(' ')
                       end
     puts "\n\n possibilities list is #{@list.length} long\n\n"
+  end
+
+  def checkGuess(player, guess, answer, test=false)
+    
+    super(player, guess, answer, test)
+
+    if (!test) #if player is computer
+      if victory?(@blackPegs)
+        puts "Congratulations Computer, you have won!"
+        return true
+      else
+        puts "Your guess resulted in #{@blackPegs} black pegs and #{@whitePegs} white pegs.\n"
+        return false
+      end  
+    else
+      return @score
+    end
   end
 
 end

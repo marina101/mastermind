@@ -21,30 +21,33 @@ class Game
     Please enter 'breaker' or 'setter':"
     answer = gets.chomp
     comp_first = true
-    
+    win = false
 
     if answer == "breaker"
-      board = Board.new
+      board = Human.new
       board.showBoard
       12.times do
         board.askGuess
-        break if board.checkGuess("human", board.guess, board.contents)
-        board.showBoard
+        win = board.checkGuess("human", board.guess, board.contents)
+        break if win  
       end
+    puts "Sorry computer, you have run out of turns" if !win
+    board.showBoard
     elsif answer == "setter"
       board = Ai.new
-      win = false
+      
       board.setBoard
-      board.showBoard
       12.times do 
         if(comp_first)
-          board.comp_first_guess
+          win = board.comp_first_guess
           comp_first=false
         else
-          board.comp_guess
+          win = board.comp_guess
         end
-      
+      break if win
       end
+      puts "Sorry, you have run out of turns" if !win
+      board.showBoard
     end
     puts "Do you want to play again? Type 'y' if yes, any other key to quit"
     play_again = gets.chomp
